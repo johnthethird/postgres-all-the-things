@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e
+set -o pipefail
+
+export PGHOST=${PGHOST-localhost}
+export PGPORT=${PGPORT-5432}
+export PGDATABASE=${PGDATABASE-pgdbapi}
+export PGUSER=${PGUSER-postgres}
+export PGPASSWORD=${PGPASSWORD-password}
+
+echo "Force dropping $PGDATABASE database..."
+echo "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$PGDATABASE';" | psql -d postgres
+echo "DROP DATABASE $PGDATABASE; CREATE DATABASE $PGDATABASE;" | psql -d postgres
